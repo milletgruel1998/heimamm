@@ -1,15 +1,15 @@
 /* 导入插件 */
-import VueRouter from 'vue-router'
 import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-/* 导入组件 */
+/* 导入子组件 */
 import login from '@/view/login/login.vue'
 
 /* 使用插件 */
 Vue.use(VueRouter)
 
 /* 路由实例化 */
-const Router = new VueRouter({
+const router = new VueRouter({
     /* 路由配置 */
     routes: [
         {
@@ -20,4 +20,4 @@ const Router = new VueRouter({
 });
 
 /* 输出路由 */
-export default Router
+export default router
