@@ -8,13 +8,13 @@
         <span class="loginRightText">用户登录</span>
       </div>
       <!-- form表单 -->
-      <el-form ref="form" :model="form">
+      <el-form ref="form" :model="form" :rules="rules">
         <!-- 手机号 -->
-        <el-form-item>
+        <el-form-item prop="phone">
           <el-input v-model="form.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input
             v-model="form.password"
             prefix-icon="el-icon-lock"
@@ -23,7 +23,7 @@
           ></el-input>
         </el-form-item>
         <!-- 验证码 -->
-        <el-form-item>
+        <el-form-item prop="code">
           <el-row>
             <el-col :span="16">
               <el-input
@@ -34,7 +34,7 @@
               ></el-input>
             </el-col>
             <el-col :span="8">
-              <el-input class="verification" prefix-icon="el-icon-key"></el-input>
+              <img src="@/assets/img/codePic.png" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -44,14 +44,15 @@
           <el-link type="primary">用户协议</el-link>和
           <el-link type="primary">隐私条款</el-link>
         </el-checkbox>
-        <br />
-        <!-- 登录 -->
-        <el-button type="primary" class="login_btn">登录</el-button>
-        <br />
-        <!-- 注册 -->
-        <el-button type="primary" class="register_btn" @click="dialogVisible = true">注册</el-button>
+        <!-- 登录+注册按钮 -->
+        <el-form-item>
+          <el-button type="primary" class="login_btn" @click="loginClick()">登录</el-button>
+          <br />
+          <el-button type="primary" class="register_btn" @click="dialogVisible = true">注册</el-button>
+        </el-form-item>
         <!-- 注册弹出框 -->
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+        <el-dialog :visible.sync="dialogVisible" width="30%" :show-close="false">
+          <div slot="title">用户注册</div>
           <span>这是一段信息</span>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
@@ -83,19 +84,46 @@ export default {
         code: "", // 验证码
         checked: "" // 是否选中协议
       },
+      /* 验证规则 */
+      rules: {
+        phone: [
+          // 手机号码验证
+          { required: true, message: "请输入11位的手机号", trigger: "blur" }
+        ],
+        password: [
+          // 登录密码验证
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur"
+          },
+          {
+            min: 6,
+            max: 12,
+            message: "请输入6到12位长度密码",
+            trigger: "change"
+          }
+        ],
+        code: [
+          // 验证码验证
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          { min: 4, max: 4, message: "请正确输入验证码", trigger: "blur" }
+        ]
+      },
+      /* 默认注册弹出框是隐藏的 */
       dialogVisible: false
     };
   },
   methods: {
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(res => {
-          console.log(res);
-          done();
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    /* 登录验证 */
+    loginClick() {
+      this.$refs.form.validate(res => {
+        if (res) {
+          this.$message.success("登录成功！");
+        } else {
+          this.$message.error("登录失败！");
+        }
+      });
     }
   }
 };
