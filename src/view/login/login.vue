@@ -48,34 +48,26 @@
         <el-form-item>
           <el-button type="primary" class="login_btn" @click="loginClick()">登录</el-button>
           <br />
-          <el-button type="primary" class="register_btn" @click="dialogVisible = true">注册</el-button>
+          <el-button type="primary" class="register_btn" @click="registerClick()">注册</el-button>
         </el-form-item>
-        <!-- 注册弹出框 -->
-        <el-dialog :visible.sync="dialogVisible" width="30%" :show-close="false">
-          <div slot="title">用户注册</div>
-          <span>这是一段信息</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-          </span>
-        </el-dialog>
       </el-form>
     </div>
     <div class="right">
       <img src="@/assets/img/logo.png" alt />
     </div>
+    <register ref="register" />
   </div>
 </template>
 
 <script>
 /* 导入注册组件 */
-// import register from "@/view/register/register.vue";
+import register from "./register.vue";
 
 export default {
   name: "login",
-  // components: {
-  //   register
-  // },
+  components: {
+    register
+  },
   data() {
     return {
       form: {
@@ -114,6 +106,7 @@ export default {
       dialogVisible: false
     };
   },
+  
   methods: {
     /* 登录验证 */
     loginClick() {
@@ -124,12 +117,16 @@ export default {
           this.$message.error("登录失败！");
         }
       });
+    },
+    /* 注册界面 */
+    registerClick() {
+      this.$refs.register.dialogFormVisible = true;
     }
   }
 };
 </script>
 
-<style lang="less">
+<style lang="less" >
 .login {
   display: flex;
   /* 水平方向 */
