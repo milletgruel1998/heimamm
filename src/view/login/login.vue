@@ -34,16 +34,18 @@
               ></el-input>
             </el-col>
             <el-col :span="8">
-              <img src="@/assets/img/codePic.png" alt />
+              <img class="codePic" :src="codeUrl" @click="changeCodePic" alt />
             </el-col>
           </el-row>
         </el-form-item>
         <!-- 协议 -->
-        <el-checkbox v-model="form.checked">
-          我已阅读并同意
-          <el-link type="primary">用户协议</el-link>和
-          <el-link type="primary">隐私条款</el-link>
-        </el-checkbox>
+        <el-form-item prop="checked">
+          <el-checkbox v-model="form.checked">
+            我已阅读并同意
+            <el-link type="primary">用户协议</el-link>和
+            <el-link type="primary">隐私条款</el-link>
+          </el-checkbox>
+        </el-form-item>
         <!-- 登录+注册按钮 -->
         <el-form-item>
           <el-button type="primary" class="login_btn" @click="loginClick()">登录</el-button>
@@ -62,7 +64,8 @@
 <script>
 /* 导入注册组件 */
 import register from "./register.vue";
-
+import { toLogin } from "@/api/login.js";
+import { saveToken } from "@/utils/token.js";
 export default {
   name: "login",
   components: {
@@ -70,6 +73,7 @@ export default {
   },
   data() {
     return {
+      codeUrl: process.env.VUE_APP_URL + "/captcha?type=login",
       form: {
         phone: "", // 手机号
         password: "", // 用户密码
@@ -80,7 +84,18 @@ export default {
       rules: {
         phone: [
           // 手机号码验证
-          { required: true, message: "请输入11位的手机号", trigger: "blur" }
+          { required: true, message: "请输入11位的手机号", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              let _reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+              if (_reg.test(value)) {
+                return callback();
+              } else {
+                return callback("请输入正确的手机号！");
+              }
+            },
+            trigger: "change"
+          }
         ],
         password: [
           // 登录密码验证
@@ -99,28 +114,49 @@ export default {
         code: [
           // 验证码验证
           { required: true, message: "请输入验证码", trigger: "blur" },
-          { min: 4, max: 4, message: "请正确输入验证码", trigger: "blur" }
+          { min: 4, max: 4, message: "请正确输入验证码", trigger: "change" }
+        ],
+        checked: [
+          { required: true, message: "请勾选协议！", trigger: "change" },
+          {
+            validator: (rule, value, callback) => {
+              if (value === true) {
+                return callback();
+              } else {
+                return callback("请勾选协议！");
+              }
+            },
+            trigger: "change"
+          }
         ]
       },
       /* 默认注册弹出框是隐藏的 */
       dialogVisible: false
     };
   },
-  
+
   methods: {
     /* 登录验证 */
     loginClick() {
+      // validate方法中的回调函数中的参数是一个布尔值
       this.$refs.form.validate(res => {
         if (res) {
-          this.$message.success("登录成功！");
-        } else {
-          this.$message.error("登录失败！");
+          toLogin(this.form).then(res => {
+            // console.log(res);
+            this.$message.success("登录成功");
+            saveToken("token", res.data.token);
+          });
         }
       });
     },
     /* 注册界面 */
     registerClick() {
       this.$refs.register.dialogFormVisible = true;
+    },
+    /* 更换验证码 */
+    changeCodePic() {
+      this.codeUrl =
+        process.env.VUE_APP_URL + "/captcha?type=login&time=" + Date.now();
     }
   }
 };
@@ -182,6 +218,10 @@ export default {
       line-height: 16px;
       margin-top: 26px;
     }
+  }
+  .codePic {
+    width: 100%;
+    height: 40px;
   }
 }
 </style>
