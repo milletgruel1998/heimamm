@@ -65,7 +65,7 @@
 /* 导入注册组件 */
 import register from "./register.vue";
 import { toLogin } from "@/api/login.js";
-import { saveToken } from "@/utils/token.js";
+import { saveToken, getToken } from "@/utils/token.js";
 export default {
   name: "login",
   components: {
@@ -135,6 +135,12 @@ export default {
     };
   },
 
+  created() {
+    if (getToken()) {
+      this.$router.push("/home");
+    }
+  },
+
   methods: {
     /* 登录验证 */
     loginClick() {
@@ -142,9 +148,9 @@ export default {
       this.$refs.form.validate(res => {
         if (res) {
           toLogin(this.form).then(res => {
-            // console.log(res);
             this.$message.success("登录成功");
             saveToken("token", res.data.token);
+            this.$router.push("/home");
           });
         }
       });
