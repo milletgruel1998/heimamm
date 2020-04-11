@@ -13,6 +13,7 @@ let instance = axios.create({
 instance.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     if (getToken()) {
+        // 在请求表头中添加token
         config.headers.token = getToken();
     }
     return config;

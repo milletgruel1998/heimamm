@@ -3,6 +3,7 @@ import router from '@/router/router.js'
 
 /* 导入子组件 */
 import App from '@/App.vue'
+import store from '@/store/index.js'
 
 /* 导入插件 */
 import Vue from 'vue'
@@ -17,5 +18,6 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
   /* 将路由输入到Vue实例中 */
-  router
+  router,
+  store
 }).$mount('#app')

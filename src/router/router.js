@@ -20,7 +20,10 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            component: login
+            component: login,
+            meta: {
+                title: "登录"
+            }
         },
         {
             path: '/home',
@@ -30,24 +33,39 @@ const router = new VueRouter({
             // 配置嵌套路由，在父路由配置中加一个children
             children: [
                 {
-                    path: 'chart',
-                    component: chart
+                    path: 'chart', //这里可以把 `/` 省略掉，它是相对地址---也可以写 `/home/chart`
+                    component: chart,
+                    meta: {
+                        title: '数据概览'
+                    }
                 },
                 {
                     path: 'userList',
-                    component: userList
+                    component: userList,
+                    meta: {
+                        title: '用户列表'
+                    }
                 },
                 {
                     path: 'question',
-                    component: question
+                    component: question,
+                    meta: {
+                        title: '题库列表'
+                    }
                 },
                 {
                     path: 'business',
-                    component: business
+                    component: business,
+                    meta: {
+                        title: '企业列表'
+                    }
                 },
                 {
                     path: 'subject',
-                    component: subject
+                    component: subject,
+                    meta: {
+                        title: '学科列表'
+                    }
                 },
             ]
         }
@@ -56,14 +74,18 @@ const router = new VueRouter({
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 路由导航守卫
+// 进入路由前
 router.beforeEach((to, form, next) => {
+    // 开启进度条
     NProgress.start()
     next()
 })
-router.afterEach((to, from) => {
-    NProgress.done()
-    console.log(to);
-    console.log(from);
+// 进入到路由后   to from 基本就不使用了
+router.afterEach((to) => {
+    // 结束进度条
+    NProgress.done();
+    // 修改每个子组件对应的title的值
+    document.title = to.meta.title // to 就相当于 this.$route
 })
 
 /* 输出路由 */
