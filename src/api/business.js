@@ -12,4 +12,25 @@ function setBusinessStatus(data) {
         data
     })
 }
-export { getBusinessData, setBusinessStatus }
+function deleteBusinessData(data) {
+    return instance({
+        url: '/enterprise/remove',
+        method: 'post',
+        data
+    })
+}
+function addBusiness(data) {
+    return instance({
+        url: '/enterprise/add',
+        method: 'post',
+        data
+    })
+}
+function editBusiness(data) {
+    return instance({
+        url: '/enterprise/edit',
+        method: 'post',
+        data
+    })
+}
+export { getBusinessData, setBusinessStatus, deleteBusinessData, addBusiness, editBusiness }
