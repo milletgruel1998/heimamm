@@ -43,7 +43,7 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main class="body_mod">
         <!-- 嵌套路由 -->
         <router-view></router-view>
       </el-main>
@@ -73,9 +73,10 @@ export default {
       this.userInfo = res.data;
       this.userInfo.avatar =
         process.env.VUE_APP_URL + "/" + this.userInfo.avatar;
+      // 将用户信息共享到vuex中
       this.$store.state.userInfo = this.userInfo;
-      /*  */
-      this.$router.push("/home/chart");
+      /* 进入home页，默认显示学科列表 */
+      this.$router.push("/home/subject");
     });
   },
   methods: {
@@ -144,6 +145,9 @@ export default {
     .el-menu-vertical-demo:not(.el-menu--collapse) {
       width: 160px;
     }
+  }
+  .body_mod {
+    background-color: #e8e9ec;
   }
 }
 </style>

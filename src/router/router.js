@@ -1,3 +1,9 @@
+// 路由跳转出错处理
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
 /* 导入插件 */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -71,6 +77,7 @@ const router = new VueRouter({
         }
     ],
 });
+/* 导入进度条插件 */
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 路由导航守卫
