@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增企业" :visible.sync="dialogFormVisible" width="600px" class="addSubiness">
+  <el-dialog :visible.sync="dialogFormVisible" width="600px" class="addSubiness">
     <div slot="title" class="title">{{this.mode=="add"?'新增企业':'编辑企业'}}</div>
     <el-form :model="form" :rules="rules" ref="form" class="form" label-width="100px">
       <el-form-item label="企业编号" prop="eid">

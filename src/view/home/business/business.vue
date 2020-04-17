@@ -51,7 +51,11 @@
               @click="setStatus(scope.row.id)"
               class="btnStyle forbidden"
             >{{scope.row.status==1?"禁用":"启用"}}</span>
-            <span class="btnStyle" @click="deleteData(scope.row.id)">删除</span>
+            <span
+              class="btnStyle"
+              @click="deleteData(scope.row.id)"
+              v-if="$store.state.role.includes('管理员')"
+            >删除</span>
           </template>
         </el-table-column>
       </el-table>

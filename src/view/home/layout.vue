@@ -20,8 +20,16 @@
           class="el-menu-vertical-demo"
           :collapse="collapse"
         >
-          <el-menu-item index="/home/chart">
-            <!-- 图标 -->
+          <!-- v-show="item.meta.rules.includes($store.state.role)" -->
+          <el-menu-item
+            :index="'/home/'+item.path"
+            v-for="(item,index) in $router.options.routes[1].children"
+            :key="index"
+          >
+            <i :class="item.meta.icon"></i>
+            <span slot="title">{{item.meta.title}}</span>
+          </el-menu-item>
+          <!-- <el-menu-item index="/home/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
           </el-menu-item>
@@ -40,7 +48,7 @@
           <el-menu-item index="/home/subject">
             <i class="el-icon-notebook-2"></i>
             <span slot="title">学科列表</span>
-          </el-menu-item>
+          </el-menu-item>-->
         </el-menu>
       </el-aside>
       <el-main class="body_mod">
@@ -70,13 +78,37 @@ export default {
     }
     // 获取用户信息
     getUserInfo().then(res => {
+      // console.log("用户信息", res);
+      // console.log("当前路由信息", this.$route);
+      // console.log("全部的路由信息", this.$router);
       this.userInfo = res.data;
       this.userInfo.avatar =
         process.env.VUE_APP_URL + "/" + this.userInfo.avatar;
+      // 将用户角色添加到vuex中
+      this.$store.state.role = res.data.role;
+      // console.log("用户角色", this.$store.state.role);
+      // 当用户被禁用时
+      if (res.data.status == 0) {
+        //  当账号让禁用时，提示一下
+        this.$message.warning("您的账号被禁用，请联系管理员！");
+        // 清除到token
+        removeToken();
+        // 跳转到登录页
+        this.$router.push("/");
+      } else {
+        // 判断 该用户可不可以访问该模块(侧边栏)
+        if (!this.$route.meta.rules.includes(res.data.role)) {
+          // 不允许 访问处理
+          // 当账号让禁用时提示
+          this.$message.warning("您无权访问该页面！");
+          // 清除掉token
+          removeToken();
+          // 跳转到登录页
+          this.$router.push("/");
+        }
+      }
       // 将用户信息共享到vuex中
       this.$store.state.userInfo = this.userInfo;
-      /* 进入home页，默认显示学科列表 */
-      this.$router.push("/home/subject");
     });
   },
   methods: {
